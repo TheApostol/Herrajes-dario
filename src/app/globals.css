@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: "Inter", system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-inter);
+}
+
+.container-hd {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-md bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-green;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-md border border-black px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-black hover:text-white;
+}
+
+.section-title {
+  @apply text-2xl font-bold tracking-tight text-black sm:text-3xl;
+}
