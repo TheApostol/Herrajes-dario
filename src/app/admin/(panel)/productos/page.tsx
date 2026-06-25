@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import ProductRowActions from "@/components/admin/ProductRowActions";
+import ProductFilterForm from "@/components/admin/ProductFilterForm";
 import { formatPrice } from "@/lib/utils";
 
 const FILTERS: Record<string, { label: string; where: Prisma.ProductWhereInput }> = {
@@ -14,13 +15,17 @@ const FILTERS: Record<string, { label: string; where: Prisma.ProductWhereInput }
 export default async function AdminProductosPage({
   searchParams,
 }: {
-  searchParams: { q?: string; filtro?: string };
+  searchParams: { q?: string; filtro?: string; categoria?: string; marca?: string };
 }) {
   const q = searchParams.q?.trim();
   const filtro = searchParams.filtro && FILTERS[searchParams.filtro] ? searchParams.filtro : undefined;
+  const categoria = searchParams.categoria?.trim();
+  const marca = searchParams.marca?.trim();
 
   const where: Prisma.ProductWhereInput = {
     ...(filtro ? FILTERS[filtro].where : {}),
+    ...(categoria ? { category: { slug: categoria } } : {}),
+    ...(marca ? { brand: { slug: marca } } : {}),
     ...(q
       ? {
           OR: [
@@ -31,12 +36,16 @@ export default async function AdminProductosPage({
       : {}),
   };
 
-  const products = await prisma.product.findMany({
-    where,
-    include: { category: true, brand: true },
-    orderBy: { createdAt: "desc" },
-    take: 200,
-  });
+  const [products, categories, brands] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      include: { category: true, brand: true },
+      orderBy: { createdAt: "desc" },
+      take: 200,
+    }),
+    prisma.category.findMany({ orderBy: { name: "asc" }, select: { slug: true, name: true } }),
+    prisma.brand.findMany({ orderBy: { name: "asc" }, select: { slug: true, name: true } }),
+  ]);
 
   return (
     <div>
@@ -58,16 +67,14 @@ export default async function AdminProductosPage({
         </div>
       )}
 
-      <form className="mt-6">
-        {filtro && <input type="hidden" name="filtro" value={filtro} />}
-        <input
-          type="search"
-          name="q"
-          defaultValue={q}
-          placeholder="Buscar por nombre o SKU..."
-          className="w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm"
-        />
-      </form>
+      <ProductFilterForm
+        categories={categories}
+        brands={brands}
+        filtro={filtro}
+        initialQ={q}
+        initialCategoria={categoria}
+        initialMarca={marca}
+      />
 
       <div className="mt-6 overflow-x-auto rounded-lg border border-gray-200 bg-white">
         <table className="w-full text-left text-sm">
