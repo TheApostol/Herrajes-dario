@@ -26,7 +26,14 @@ export async function POST(request: NextRequest) {
   const extension = file.name.split(".").pop() || "jpg";
   const filename = `productos/${crypto.randomUUID()}.${extension}`;
 
-  const blob = await put(filename, file, { access: "public" });
-
-  return NextResponse.json({ url: blob.url });
+  try {
+    const blob = await put(filename, file, { access: "public" });
+    return NextResponse.json({ url: blob.url });
+  } catch (err) {
+    console.error("Blob upload failed:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Error al subir la imagen" },
+      { status: 500 }
+    );
+  }
 }
