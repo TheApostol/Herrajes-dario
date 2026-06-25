@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -28,6 +29,12 @@ export default function ProductRowActions({ id, active }: { id: string; active: 
 
   return (
     <div className="flex items-center justify-end gap-2">
+      <Link
+        href={`/admin/productos/${id}/editar`}
+        className="rounded-md border border-gray-300 px-2 py-1 text-xs font-medium hover:border-black"
+      >
+        Editar
+      </Link>
       <button
         onClick={toggleActive}
         disabled={loading}
