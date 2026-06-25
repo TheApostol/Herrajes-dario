@@ -101,25 +101,24 @@ export default async function HomePage() {
       <section className="border-y border-gray-200 bg-gray-50 py-12">
         <div className="container-hd">
           <h2 className="section-title">Nuestras marcas</h2>
-          <div className="mt-6 flex flex-wrap gap-4">
+          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {brands.map((brand) => (
               <Link
                 key={brand.id}
                 href={`/marcas#${brand.slug}`}
-                className="flex items-center rounded-md border border-gray-300 bg-white px-6 py-3 transition hover:border-black"
+                className="flex h-28 flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-4 transition hover:border-brand-green"
               >
-                {BRAND_LOGOS[brand.slug] ? (
-                  <div className="relative h-6 w-28">
+                {BRAND_LOGOS[brand.slug] && (
+                  <div className="relative h-10 w-full">
                     <Image
                       src={BRAND_LOGOS[brand.slug]}
                       alt={brand.name}
                       fill
-                      className="object-contain object-left"
+                      className="object-contain"
                     />
                   </div>
-                ) : (
-                  <span className="text-sm font-semibold text-black">{brand.name}</span>
                 )}
+                <span className="text-xs font-semibold text-gray-500">{brand.name}</span>
               </Link>
             ))}
           </div>

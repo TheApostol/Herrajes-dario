@@ -37,9 +37,7 @@ export default function CarritoPage() {
                 {item.imageUrl ? (
                   <Image src={item.imageUrl} alt={item.name} fill className="object-contain p-1" />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-xs text-gray-400">
-                    Sin imagen
-                  </div>
+                  <Image src="/logo.png" alt={item.name} fill className="object-contain p-3 opacity-25" />
                 )}
               </div>
               <div className="flex-1">

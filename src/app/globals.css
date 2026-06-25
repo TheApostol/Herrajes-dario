@@ -23,5 +23,10 @@ body {
 }
 
 .section-title {
-  @apply text-2xl font-bold tracking-tight text-black sm:text-3xl;
+  @apply relative pb-3 text-2xl font-bold tracking-tight text-black sm:text-3xl;
+}
+
+.section-title::after {
+  content: "";
+  @apply absolute bottom-0 left-0 h-1 w-10 rounded-full bg-brand-green;
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/CartContext";
 
@@ -20,6 +20,7 @@ interface SearchResult {
 
 export default function HeaderClient({ categories }: { categories: Category[] }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -44,6 +45,10 @@ export default function HeaderClient({ categories }: { categories: Category[] })
       controller.abort();
     };
   }, [query]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -93,7 +98,7 @@ export default function HeaderClient({ categories }: { categories: Category[] })
               }}
               onFocus={() => setShowResults(true)}
               placeholder="Buscar productos..."
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none"
             />
           </form>
           {showResults && results.length > 0 && (
@@ -114,7 +119,9 @@ export default function HeaderClient({ categories }: { categories: Category[] })
                       className="rounded object-contain"
                     />
                   ) : (
-                    <div className="h-9 w-9 shrink-0 rounded bg-gray-100" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-gray-50">
+                      <Image src="/logo.png" alt="" width={20} height={20} className="opacity-30" />
+                    </div>
                   )}
                   <span className="line-clamp-2">{r.name}</span>
                 </Link>
@@ -146,13 +153,13 @@ export default function HeaderClient({ categories }: { categories: Category[] })
       </div>
 
       {menuOpen && (
-        <nav className="border-t border-gray-200 px-4 py-3 lg:hidden">
+        <nav className="absolute left-0 right-0 top-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-gray-200 bg-white px-4 py-3 shadow-lg lg:hidden">
           <ul className="flex flex-col gap-3">
             {categories.map((cat) => (
               <li key={cat.slug}>
                 <Link
                   href={`/categoria/${cat.slug}`}
-                  className="text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 hover:text-brand-green"
                   onClick={() => setMenuOpen(false)}
                 >
                   {cat.name}

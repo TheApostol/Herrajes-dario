@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
               priority
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-gray-400">Sin imagen</div>
+            <Image src="/logo.png" alt={product.name} fill className="object-contain p-16 opacity-25" />
           )}
         </div>
 

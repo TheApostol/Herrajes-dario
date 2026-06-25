@@ -20,7 +20,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <Link
       href={`/productos/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:shadow-md"
+      className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:border-brand-green hover:shadow-md"
     >
       <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
         {product.imageUrl ? (
@@ -32,9 +32,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
             className="object-contain p-4 transition group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-gray-400">
-            Sin imagen
-          </div>
+          <Image src="/logo.png" alt={product.name} fill className="object-contain p-10 opacity-25" />
         )}
         {product.stock <= 0 && (
           <span className="absolute left-2 top-2 rounded bg-black px-2 py-1 text-xs font-semibold text-white">
