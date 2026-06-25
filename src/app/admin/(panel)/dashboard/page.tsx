@@ -2,11 +2,12 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminDashboardPage() {
-  const [totalProducts, activeProducts, outOfStock, duplicateImages, totalOrders] =
+  const [totalProducts, activeProducts, outOfStock, noImage, duplicateImages, totalOrders] =
     await Promise.all([
       prisma.product.count(),
       prisma.product.count({ where: { active: true } }),
       prisma.product.count({ where: { stock: { lte: 0 } } }),
+      prisma.product.count({ where: { OR: [{ imageUrl: null }, { imageUrl: "" }] } }),
       prisma.product.count({ where: { hasDuplicateImage: true } }),
       prisma.order.count(),
     ]);
@@ -15,6 +16,7 @@ export default async function AdminDashboardPage() {
     { label: "Productos totales", value: totalProducts, href: "/admin/productos" },
     { label: "Productos activos", value: activeProducts, href: "/admin/productos?filtro=activos" },
     { label: "Sin stock", value: outOfStock, href: "/admin/productos?filtro=sin-stock" },
+    { label: "Sin imagen", value: noImage, href: "/admin/productos?filtro=sin-imagen" },
     { label: "Imágenes duplicadas", value: duplicateImages, href: "/admin/productos?filtro=duplicadas" },
     { label: "Pedidos", value: totalOrders, href: "/admin/pedidos" },
   ];
@@ -23,7 +25,7 @@ export default async function AdminDashboardPage() {
     <div>
       <h1 className="text-2xl font-bold text-black">Dashboard</h1>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
         {stats.map((stat) => (
           <Link
             key={stat.label}

@@ -9,6 +9,7 @@ const FILTERS: Record<string, { label: string; where: Prisma.ProductWhereInput }
   activos: { label: "Activos", where: { active: true } },
   inactivos: { label: "Inactivos", where: { active: false } },
   "sin-stock": { label: "Sin stock", where: { stock: { lte: 0 } } },
+  "sin-imagen": { label: "Sin imagen", where: { OR: [{ imageUrl: null }, { imageUrl: "" }] } },
   duplicadas: { label: "Imágenes duplicadas", where: { hasDuplicateImage: true } },
 };
 
@@ -100,6 +101,11 @@ export default async function AdminProductosPage({
                     {p.hasDuplicateImage && (
                       <span className="rounded bg-yellow-200 px-1.5 py-0.5 text-[10px] font-bold text-yellow-800">
                         Imagen duplicada
+                      </span>
+                    )}
+                    {!p.imageUrl && (
+                      <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700">
+                        Sin imagen
                       </span>
                     )}
                   </div>
