@@ -21,6 +21,7 @@ export default function Footer() {
             <li><Link href="/medios-de-pago" className="hover:text-white">Medios de pago</Link></li>
             <li><Link href="/envios" className="hover:text-white">Envíos</Link></li>
             <li><Link href="/contacto" className="hover:text-white">Contacto</Link></li>
+            <li><Link href="/politicas" className="hover:text-white">Política de ventas y garantías</Link></li>
           </ul>
         </div>
         <div>
