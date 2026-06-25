@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 const checkoutSchema = z.object({
   buyerName: z.string().min(1),
-  buyerEmail: z.string().email(),
+  buyerEmail: z.union([z.string().email(), z.literal("")]).optional(),
   buyerPhone: z.string().min(1),
   paymentMethod: z.enum(["transferencia", "efectivo"]),
   items: z
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       status: "pending",
       totalAmount,
       buyerName,
-      buyerEmail,
+      buyerEmail: buyerEmail || null,
       buyerPhone,
       paymentMethod,
       items,
