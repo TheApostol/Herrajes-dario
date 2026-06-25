@@ -1,24 +1,38 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import ProductRowActions from "@/components/admin/ProductRowActions";
 import { formatPrice } from "@/lib/utils";
+
+const FILTERS: Record<string, { label: string; where: Prisma.ProductWhereInput }> = {
+  activos: { label: "Activos", where: { active: true } },
+  inactivos: { label: "Inactivos", where: { active: false } },
+  "sin-stock": { label: "Sin stock", where: { stock: { lte: 0 } } },
+  duplicadas: { label: "Imágenes duplicadas", where: { hasDuplicateImage: true } },
+};
 
 export default async function AdminProductosPage({
   searchParams,
 }: {
-  searchParams: { q?: string };
+  searchParams: { q?: string; filtro?: string };
 }) {
   const q = searchParams.q?.trim();
+  const filtro = searchParams.filtro && FILTERS[searchParams.filtro] ? searchParams.filtro : undefined;
 
-  const products = await prisma.product.findMany({
-    where: q
+  const where: Prisma.ProductWhereInput = {
+    ...(filtro ? FILTERS[filtro].where : {}),
+    ...(q
       ? {
           OR: [
             { name: { contains: q, mode: "insensitive" } },
             { sku: { contains: q, mode: "insensitive" } },
           ],
         }
-      : undefined,
+      : {}),
+  };
+
+  const products = await prisma.product.findMany({
+    where,
     include: { category: true, brand: true },
     orderBy: { createdAt: "desc" },
     take: 200,
@@ -33,7 +47,19 @@ export default async function AdminProductosPage({
         </Link>
       </div>
 
+      {filtro && (
+        <div className="mt-4 flex items-center gap-2 text-sm">
+          <span className="rounded-full bg-brand-green/10 px-3 py-1 font-medium text-brand-green">
+            Filtro: {FILTERS[filtro].label}
+          </span>
+          <Link href="/admin/productos" className="text-gray-500 hover:underline">
+            Quitar filtro
+          </Link>
+        </div>
+      )}
+
       <form className="mt-6">
+        {filtro && <input type="hidden" name="filtro" value={filtro} />}
         <input
           type="search"
           name="q"
