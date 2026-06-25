@@ -132,11 +132,15 @@ src/
   (`drive.google.com/uc?export=view&id=...`), sin necesidad de migrarlas.
 - Desde el panel de admin también se puede subir una imagen directamente
   (JPG/PNG/WEBP/GIF, hasta 5MB) en lugar de pegar una URL. Esto usa
-  [Vercel Blob](https://vercel.com/docs/storage/vercel-blob): hay que
-  activar un "Blob store" desde el dashboard de Vercel y conectarlo al
-  proyecto (esto agrega automáticamente la variable `BLOB_READ_WRITE_TOKEN`).
-  Sin esa variable configurada, la opción "Subir imagen" no funciona pero
-  la opción "URL" sigue funcionando igual que antes.
+  [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) con acceso
+  **público** (el modo de acceso se fija al crear el store y no se puede
+  cambiar después). Al conectar el store al proyecto, Vercel agrega
+  automáticamente una variable con el token (en este proyecto se llama
+  `BLOB2_READ_WRITE_TOKEN`, ya que el nombre depende del nickname del
+  store; si se recrea el store con otro nombre hay que actualizar la
+  referencia en `src/app/api/admin/upload/route.ts`). Sin esa variable
+  configurada, la opción "Subir imagen" no funciona pero la opción "URL"
+  sigue funcionando igual que antes.
 - Los productos con la misma URL de imagen quedan marcados con
   `hasDuplicateImage: true` para que el dueño de la tienda pueda
   reemplazarlas más adelante.

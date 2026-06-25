@@ -27,7 +27,10 @@ export async function POST(request: NextRequest) {
   const filename = `productos/${crypto.randomUUID()}.${extension}`;
 
   try {
-    const blob = await put(filename, file, { access: "public" });
+    const blob = await put(filename, file, {
+      access: "public",
+      token: process.env.BLOB2_READ_WRITE_TOKEN,
+    });
     return NextResponse.json({ url: blob.url });
   } catch (err) {
     console.error("Blob upload failed:", err);
