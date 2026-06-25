@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export interface ProductFormData {
   id?: string;
@@ -42,6 +43,28 @@ export default function ProductForm({
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imageTab, setImageTab] = useState<"url" | "upload">("url");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleFileUpload(file: File) {
+    setUploading(true);
+    setUploadError(null);
+
+    const body = new FormData();
+    body.append("file", file);
+
+    const res = await fetch("/api/admin/upload", { method: "POST", body });
+    const data = await res.json();
+
+    if (res.ok) {
+      setForm((f) => ({ ...f, imageUrl: data.url }));
+    } else {
+      setUploadError(data.error ?? "Error al subir la imagen");
+    }
+    setUploading(false);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -172,13 +195,57 @@ export default function ProductForm({
       </div>
 
       <div>
-        <label className="text-sm font-semibold text-black">URL de imagen</label>
-        <input
-          type="text"
-          value={form.imageUrl ?? ""}
-          onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-        />
+        <label className="text-sm font-semibold text-black">Imagen del producto</label>
+        <div className="mt-1 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setImageTab("url")}
+            className={`rounded-md px-3 py-1.5 text-sm font-medium ${
+              imageTab === "url" ? "bg-black text-white" : "bg-gray-100 text-gray-600"
+            }`}
+          >
+            URL
+          </button>
+          <button
+            type="button"
+            onClick={() => setImageTab("upload")}
+            className={`rounded-md px-3 py-1.5 text-sm font-medium ${
+              imageTab === "upload" ? "bg-black text-white" : "bg-gray-100 text-gray-600"
+            }`}
+          >
+            Subir imagen
+          </button>
+        </div>
+
+        {imageTab === "url" ? (
+          <input
+            type="text"
+            value={form.imageUrl ?? ""}
+            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+            className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
+        ) : (
+          <div className="mt-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload(file);
+              }}
+              className="block w-full text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-black hover:file:bg-gray-200"
+            />
+            {uploading && <p className="mt-1 text-xs text-gray-500">Subiendo imagen...</p>}
+            {uploadError && <p className="mt-1 text-xs text-red-600">{uploadError}</p>}
+          </div>
+        )}
+
+        {form.imageUrl && (
+          <div className="relative mt-3 h-32 w-32 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
+            <Image src={form.imageUrl} alt="Vista previa" fill className="object-contain p-2" />
+          </div>
+        )}
       </div>
 
       <div>

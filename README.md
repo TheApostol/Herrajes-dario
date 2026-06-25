@@ -130,6 +130,13 @@ src/
 - El carrito se persiste en `localStorage`, no requiere base de datos.
 - Las imágenes de producto se sirven directamente desde Google Drive
   (`drive.google.com/uc?export=view&id=...`), sin necesidad de migrarlas.
+- Desde el panel de admin también se puede subir una imagen directamente
+  (JPG/PNG/WEBP/GIF, hasta 5MB) en lugar de pegar una URL. Esto usa
+  [Vercel Blob](https://vercel.com/docs/storage/vercel-blob): hay que
+  activar un "Blob store" desde el dashboard de Vercel y conectarlo al
+  proyecto (esto agrega automáticamente la variable `BLOB_READ_WRITE_TOKEN`).
+  Sin esa variable configurada, la opción "Subir imagen" no funciona pero
+  la opción "URL" sigue funcionando igual que antes.
 - Los productos con la misma URL de imagen quedan marcados con
   `hasDuplicateImage: true` para que el dueño de la tienda pueda
   reemplazarlas más adelante.
