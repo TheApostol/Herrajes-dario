@@ -3,6 +3,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/ProductCard";
 import { whatsappLink } from "@/lib/utils";
+import { BRAND_LOGOS } from "@/lib/brandLogos";
 
 export const revalidate = 300;
 
@@ -105,9 +106,20 @@ export default async function HomePage() {
               <Link
                 key={brand.id}
                 href={`/marcas#${brand.slug}`}
-                className="rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-black transition hover:border-black"
+                className="flex items-center rounded-md border border-gray-300 bg-white px-6 py-3 transition hover:border-black"
               >
-                {brand.name}
+                {BRAND_LOGOS[brand.slug] ? (
+                  <div className="relative h-6 w-28">
+                    <Image
+                      src={BRAND_LOGOS[brand.slug]}
+                      alt={brand.name}
+                      fill
+                      className="object-contain object-left"
+                    />
+                  </div>
+                ) : (
+                  <span className="text-sm font-semibold text-black">{brand.name}</span>
+                )}
               </Link>
             ))}
           </div>

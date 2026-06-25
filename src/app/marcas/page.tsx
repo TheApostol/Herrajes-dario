@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/ProductCard";
+import { BRAND_LOGOS } from "@/lib/brandLogos";
 
 export const metadata: Metadata = {
   title: "Marcas",
@@ -30,7 +32,18 @@ export default async function MarcasPage() {
       <div className="mt-10 space-y-14">
         {brands.map((brand) => (
           <section key={brand.id} id={brand.slug}>
-            <h2 className="text-xl font-bold text-black">{brand.name}</h2>
+            {BRAND_LOGOS[brand.slug] ? (
+              <div className="relative h-12 w-48">
+                <Image
+                  src={BRAND_LOGOS[brand.slug]}
+                  alt={brand.name}
+                  fill
+                  className="object-contain object-left"
+                />
+              </div>
+            ) : (
+              <h2 className="text-xl font-bold text-black">{brand.name}</h2>
+            )}
             {brand.products.length > 0 ? (
               <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                 {brand.products.map((p) => (
