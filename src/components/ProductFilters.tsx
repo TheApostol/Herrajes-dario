@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 interface Option {
@@ -18,6 +18,7 @@ export default function ProductFilters({
   showCategories?: boolean;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [minPrice, setMinPrice] = useState(searchParams.get("min") ?? "");
@@ -34,7 +35,7 @@ export default function ProductFilters({
       params.delete(key);
     }
     params.delete("page");
-    router.push(`/productos?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
   function applyPriceRange(e: React.FormEvent) {
@@ -45,7 +46,7 @@ export default function ProductFilters({
     if (maxPrice) params.set("max", maxPrice);
     else params.delete("max");
     params.delete("page");
-    router.push(`/productos?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
   return (
@@ -78,26 +79,18 @@ export default function ProductFilters({
 
       <div>
         <h3 className="text-sm font-bold uppercase tracking-wide text-black">Marca</h3>
-        <ul className="mt-3 space-y-2">
-          <li>
-            <button
-              onClick={() => updateParam("marca", null)}
-              className={`text-sm ${!activeBrand ? "font-bold text-brand-green" : "text-gray-600 hover:text-black"}`}
-            >
-              Todas
-            </button>
-          </li>
+        <select
+          value={activeBrand}
+          onChange={(e) => updateParam("marca", e.target.value || null)}
+          className="mt-3 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none"
+        >
+          <option value="">Todas</option>
           {brands.map((brand) => (
-            <li key={brand.slug}>
-              <button
-                onClick={() => updateParam("marca", brand.slug)}
-                className={`text-sm ${activeBrand === brand.slug ? "font-bold text-brand-green" : "text-gray-600 hover:text-black"}`}
-              >
-                {brand.name}
-              </button>
-            </li>
+            <option key={brand.slug} value={brand.slug}>
+              {brand.name}
+            </option>
           ))}
-        </ul>
+        </select>
       </div>
 
       <div>
