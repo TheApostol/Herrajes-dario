@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/ProductCard";
 import { whatsappLink } from "@/lib/utils";
 import { BRAND_LOGOS } from "@/lib/brandLogos";
+import { CATEGORY_ICONS } from "@/lib/categoryIcons";
 
 export const revalidate = 300;
 
@@ -11,13 +12,6 @@ export default async function HomePage() {
   const [categories, brands, featuredProducts] = await Promise.all([
     prisma.category.findMany({
       orderBy: { name: "asc" },
-      include: {
-        products: {
-          where: { active: true, imageUrl: { not: null } },
-          take: 1,
-          select: { imageUrl: true },
-        },
-      },
     }),
     prisma.brand.findMany({ orderBy: { name: "asc" } }),
     prisma.product.findMany({
@@ -68,7 +62,7 @@ export default async function HomePage() {
         <h2 className="section-title">Categorías</h2>
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {categories.map((cat) => {
-            const imageUrl = cat.products[0]?.imageUrl ?? null;
+            const icon = CATEGORY_ICONS[cat.slug] ?? null;
             return (
               <Link
                 key={cat.id}
@@ -76,12 +70,12 @@ export default async function HomePage() {
                 className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-gray-50 transition hover:border-brand-green hover:bg-white"
               >
                 <div className="relative h-24 w-full bg-white">
-                  {imageUrl ? (
+                  {icon ? (
                     <Image
-                      src={imageUrl}
+                      src={icon}
                       alt={cat.name}
                       fill
-                      className="object-contain p-3 transition group-hover:scale-105"
+                      className="object-contain p-4 transition group-hover:scale-105"
                     />
                   ) : (
                     <Image src="/logo.png" alt="" fill className="object-contain p-7 opacity-20" />
