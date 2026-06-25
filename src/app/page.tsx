@@ -129,7 +129,7 @@ export default async function HomePage() {
         <div className="rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-bold">Medios de pago</h3>
           <p className="mt-2 text-sm text-gray-600">
-            Mercado Pago, transferencia bancaria y efectivo en el local.
+            Transferencia bancaria y efectivo en el local.
           </p>
           <Link href="/medios-de-pago" className="mt-3 inline-block text-sm font-semibold text-brand-green hover:underline">
             Ver más →

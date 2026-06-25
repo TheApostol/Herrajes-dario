@@ -34,7 +34,9 @@ export default async function ProductosPage({
       : {}),
   };
 
-  const [products, total, categories, brands] = await Promise.all([
+  const showPromos = page === 1 && !q && !categoria && !marca && min === undefined && max === undefined;
+
+  const [products, total, categories, brands, promoProducts] = await Promise.all([
     prisma.product.findMany({
       where,
       include: { brand: true },
@@ -45,6 +47,14 @@ export default async function ProductosPage({
     prisma.product.count({ where }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
     prisma.brand.findMany({ orderBy: { name: "asc" } }),
+    showPromos
+      ? prisma.product.findMany({
+          where: { active: true, salePrice: { not: null } },
+          include: { brand: true },
+          orderBy: { updatedAt: "desc" },
+          take: 4,
+        })
+      : Promise.resolve([]),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -65,6 +75,29 @@ export default async function ProductosPage({
     <div className="container-hd py-10">
       <h1 className="section-title">Catálogo de productos</h1>
       <p className="mt-2 text-sm text-gray-500">{total} productos encontrados</p>
+
+      {promoProducts.length > 0 && (
+        <section className="mt-8 rounded-lg border border-brand-green/30 bg-brand-green/5 p-6">
+          <h2 className="text-lg font-bold text-black">🔥 Promociones</h2>
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {promoProducts.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={{
+                  id: p.id,
+                  slug: p.slug,
+                  name: p.name,
+                  price: Number(p.price),
+                  salePrice: p.salePrice ? Number(p.salePrice) : null,
+                  imageUrl: p.imageUrl,
+                  brand: p.brand,
+                  stock: p.stock,
+                }}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="mt-8 flex flex-col gap-8 lg:flex-row">
         <ProductFilters categories={categories} brands={brands} />

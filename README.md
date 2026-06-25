@@ -1,7 +1,7 @@
 # Herrajes Darío — Tienda online
 
 Tienda online para Herrajes Darío, construida con Next.js 14 (App Router),
-TypeScript, Tailwind CSS, Prisma y Mercado Pago.
+TypeScript, Tailwind CSS y Prisma.
 
 ## Stack
 
@@ -9,7 +9,6 @@ TypeScript, Tailwind CSS, Prisma y Mercado Pago.
 - Tailwind CSS
 - PostgreSQL + Prisma ORM
 - iron-session (auth de administrador basada en cookies, sin JWT)
-- Mercado Pago SDK v2 (checkout pro)
 - papaparse para la importación de productos desde CSV
 
 ## Requisitos
@@ -35,8 +34,7 @@ TypeScript, Tailwind CSS, Prisma y Mercado Pago.
    - `DATABASE_URL`: connection string de PostgreSQL.
    - `ADMIN_USERNAME` / `ADMIN_PASSWORD`: credenciales del panel de administración (por defecto `HD` / `herrajeshd`).
    - `SESSION_SECRET`: string aleatorio de al menos 32 caracteres para firmar la cookie de sesión.
-   - `MP_ACCESS_TOKEN` / `MP_PUBLIC_KEY`: credenciales de Mercado Pago.
-   - `NEXT_PUBLIC_SITE_URL`: URL pública del sitio (usada en metadata, sitemap y back_urls de Mercado Pago).
+   - `NEXT_PUBLIC_SITE_URL`: URL pública del sitio (usada en metadata y sitemap).
 
 3. Crear las tablas en la base de datos:
 
@@ -75,20 +73,18 @@ La importación de CSV crea automáticamente las categorías y marcas que no
 existan, y actualiza los productos existentes según su slug (columna
 "Identificador de URL").
 
-## Mercado Pago
+## Checkout
 
-El checkout crea una preferencia de pago vía la API de Mercado Pago y
-redirige al usuario al checkout hospedado. Las URLs de retorno son:
+El checkout es 100% por WhatsApp, sin pasarela de pago online:
 
-- `/checkout/success`
-- `/checkout/pending`
-- `/checkout/failure`
-
-El webhook de notificaciones de pago está en `/api/webhooks/mercadopago` y
-actualiza el estado del pedido en la base de datos.
-
-Para probar en producción, configurá la notification URL de Mercado Pago
-apuntando a `https://tu-dominio.com/api/webhooks/mercadopago`.
+1. El comprador completa nombre, teléfono y email (opcional) y elige forma
+   de pago (transferencia bancaria o efectivo en el local). No se requiere
+   cuenta.
+2. Si elige transferencia, puede ver los datos de la cuenta y subir el
+   comprobante desde un modal.
+3. Al confirmar, se guarda el pedido en la base de datos (`Order`) y se abre
+   WhatsApp con el detalle completo del pedido para coordinar con un
+   operador.
 
 ## Deploy
 
@@ -125,7 +121,7 @@ prisma/
 src/
   app/                 Rutas (App Router): tienda, checkout, admin, API
   components/          Componentes de la tienda y del panel de admin
-  lib/                 Prisma client, sesión, Mercado Pago, utilidades, importador CSV
+  lib/                 Prisma client, sesión, utilidades, importador CSV
   types/               Tipos compartidos (carrito)
 ```
 

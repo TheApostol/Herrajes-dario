@@ -34,8 +34,13 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
         ) : (
           <Image src="/logo.png" alt={product.name} fill className="object-contain p-10 opacity-25" />
         )}
+        {hasDiscount && (
+          <span className="absolute left-2 top-2 rounded bg-brand-green px-2 py-1 text-xs font-semibold text-white">
+            Oferta
+          </span>
+        )}
         {product.stock <= 0 && (
-          <span className="absolute left-2 top-2 rounded bg-black px-2 py-1 text-xs font-semibold text-white">
+          <span className="absolute right-2 top-2 rounded bg-black px-2 py-1 text-xs font-semibold text-white">
             Sin stock
           </span>
         )}

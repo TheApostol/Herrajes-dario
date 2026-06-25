@@ -35,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es-AR" className={inter.variable}>
       <body className="flex min-h-screen flex-col bg-white text-black antialiased">
+        <div className="h-1 w-full bg-brand-green" />
         <CartProvider>
           <Header />
           <main className="flex-1">{children}</main>

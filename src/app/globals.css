@@ -28,5 +28,5 @@ body {
 
 .section-title::after {
   content: "";
-  @apply absolute bottom-0 left-0 h-1 w-10 rounded-full bg-brand-green;
+  @apply absolute bottom-0 left-0 h-1.5 w-12 rounded-full bg-brand-green;
 }

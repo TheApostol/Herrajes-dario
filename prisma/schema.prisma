@@ -61,8 +61,7 @@ model Order {
   buyerEmail    String?
   buyerName     String?
   buyerPhone    String?
-  mpPreferenceId String?
-  mpPaymentId   String?
+  paymentMethod String?
   items         Json
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
