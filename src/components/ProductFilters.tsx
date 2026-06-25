@@ -9,11 +9,13 @@ interface Option {
 }
 
 export default function ProductFilters({
-  categories,
+  categories = [],
   brands,
+  showCategories = true,
 }: {
-  categories: Option[];
+  categories?: Option[];
   brands: Option[];
+  showCategories?: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,29 +50,31 @@ export default function ProductFilters({
 
   return (
     <aside className="w-full shrink-0 space-y-8 lg:w-64">
-      <div>
-        <h3 className="text-sm font-bold uppercase tracking-wide text-black">Categoría</h3>
-        <ul className="mt-3 space-y-2">
-          <li>
-            <button
-              onClick={() => updateParam("categoria", null)}
-              className={`text-sm ${!activeCategory ? "font-bold text-brand-green" : "text-gray-600 hover:text-black"}`}
-            >
-              Todas
-            </button>
-          </li>
-          {categories.map((cat) => (
-            <li key={cat.slug}>
+      {showCategories && (
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wide text-black">Categoría</h3>
+          <ul className="mt-3 space-y-2">
+            <li>
               <button
-                onClick={() => updateParam("categoria", cat.slug)}
-                className={`text-sm ${activeCategory === cat.slug ? "font-bold text-brand-green" : "text-gray-600 hover:text-black"}`}
+                onClick={() => updateParam("categoria", null)}
+                className={`text-sm ${!activeCategory ? "font-bold text-brand-green" : "text-gray-600 hover:text-black"}`}
               >
-                {cat.name}
+                Todas
               </button>
             </li>
-          ))}
-        </ul>
-      </div>
+            {categories.map((cat) => (
+              <li key={cat.slug}>
+                <button
+                  onClick={() => updateParam("categoria", cat.slug)}
+                  className={`text-sm ${activeCategory === cat.slug ? "font-bold text-brand-green" : "text-gray-600 hover:text-black"}`}
+                >
+                  {cat.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div>
         <h3 className="text-sm font-bold uppercase tracking-wide text-black">Marca</h3>

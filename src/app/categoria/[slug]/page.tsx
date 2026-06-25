@@ -43,7 +43,7 @@ export default async function CategoriaPage({
     ...(marca ? { brand: { slug: marca } } : {}),
   };
 
-  const [products, total, categories, brands] = await Promise.all([
+  const [products, total, brands] = await Promise.all([
     prisma.product.findMany({
       where,
       include: { brand: true },
@@ -52,7 +52,6 @@ export default async function CategoriaPage({
       take: PAGE_SIZE,
     }),
     prisma.product.count({ where }),
-    prisma.category.findMany({ orderBy: { name: "asc" } }),
     prisma.brand.findMany({ orderBy: { name: "asc" } }),
   ]);
 
@@ -77,7 +76,7 @@ export default async function CategoriaPage({
       <p className="mt-2 text-sm text-gray-500">{total} productos encontrados</p>
 
       <div className="mt-8 flex flex-col gap-8 lg:flex-row">
-        <ProductFilters categories={categories} brands={brands} />
+        <ProductFilters brands={brands} showCategories={false} />
 
         <div className="flex-1">
           {products.length === 0 ? (
