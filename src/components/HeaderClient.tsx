@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/CartContext";
+import { CATEGORY_ICONS } from "@/lib/categoryIcons";
 
 interface Category {
   name: string;
@@ -147,9 +148,12 @@ export default function HeaderClient({ categories }: { categories: Category[] })
               <li key={cat.slug}>
                 <Link
                   href={`/categoria/${cat.slug}`}
-                  className="block text-sm font-medium text-gray-700 hover:text-brand-green"
+                  className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-brand-green"
                   onClick={() => setMenuOpen(false)}
                 >
+                  {CATEGORY_ICONS[cat.slug] && (
+                    <Image src={CATEGORY_ICONS[cat.slug]} alt="" width={24} height={24} />
+                  )}
                   {cat.name}
                 </Link>
               </li>

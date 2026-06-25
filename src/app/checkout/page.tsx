@@ -19,6 +19,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
 
   if (items.length === 0 && step === "form") {
     return (
@@ -81,6 +82,7 @@ export default function CheckoutPage() {
 
       const url = whatsappLink(buildOrderMessage(data.orderId));
       setWhatsappUrl(url);
+      setOrderId(data.orderId);
       setStep("connecting");
       setLoading(false);
 
@@ -127,6 +129,11 @@ export default function CheckoutPage() {
         >
           Abrir WhatsApp
         </a>
+        {orderId && (
+          <Link href={`/pedido/${orderId}`} className="mt-3 text-sm font-semibold text-brand-green hover:underline">
+            Ver resumen de mi pedido →
+          </Link>
+        )}
         <Link href="/productos" className="btn-secondary mt-3">
           Seguir comprando
         </Link>

@@ -50,8 +50,31 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const finalPrice = product.salePrice ? Number(product.salePrice) : Number(product.price);
   const hasDiscount = product.salePrice != null && Number(product.salePrice) < Number(product.price);
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrajesdario.com.ar";
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.seoDescription ?? product.description ?? undefined,
+    sku: product.sku ?? undefined,
+    image: product.imageUrl ?? undefined,
+    brand: product.brand ? { "@type": "Brand", name: product.brand.name } : undefined,
+    offers: {
+      "@type": "Offer",
+      url: `${siteUrl}/productos/${product.slug}`,
+      priceCurrency: "ARS",
+      price: finalPrice,
+      availability:
+        product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    },
+  };
+
   return (
     <div className="container-hd py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <nav className="mb-6 text-sm text-gray-500">
         <Link href="/" className="hover:text-black">Inicio</Link>
         <span className="mx-2">/</span>

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/ProductCard";
 import ProductFilters from "@/components/ProductFilters";
 import Pagination from "@/components/Pagination";
+import { CATEGORY_ICONS } from "@/lib/categoryIcons";
 
 const PAGE_SIZE = 24;
 
@@ -66,7 +68,12 @@ export default async function CategoriaPage({
 
   return (
     <div className="container-hd py-10">
-      <h1 className="section-title">{categoryName}</h1>
+      <div className="flex items-center gap-3">
+        {CATEGORY_ICONS[categorySlug] && (
+          <Image src={CATEGORY_ICONS[categorySlug]} alt="" width={36} height={36} />
+        )}
+        <h1 className="section-title">{categoryName}</h1>
+      </div>
       <p className="mt-2 text-sm text-gray-500">{total} productos encontrados</p>
 
       <div className="mt-8 flex flex-col gap-8 lg:flex-row">
