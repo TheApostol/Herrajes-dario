@@ -75,18 +75,6 @@ export default function HeaderClient({ categories }: { categories: Category[] })
           <Image src="/logo.png" alt="Herrajes Darío" width={44} height={44} priority />
         </Link>
 
-        <nav className="hidden flex-1 items-center gap-5 lg:flex">
-          {categories.map((cat) => (
-            <Link
-              key={cat.slug}
-              href={`/categoria/${cat.slug}`}
-              className="text-sm font-medium text-gray-700 hover:text-brand-green"
-            >
-              {cat.name}
-            </Link>
-          ))}
-        </nav>
-
         <div ref={containerRef} className="relative ml-auto w-full max-w-xs">
           <form onSubmit={handleSubmit}>
             <input
